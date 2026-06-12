@@ -47,6 +47,46 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "NyayaBot", timestamp: new Date().toISOString() });
 });
 
+// ─── Detailed health — checks all dependencies ──────────────────────────────
+app.get("/health/detailed", async (_req: Request, res: Response) => {
+  const results: Record<string, string> = {};
+
+  // 1. Env vars
+  results.twilio_sid    = process.env.TWILIO_ACCOUNT_SID    ? `set (${process.env.TWILIO_ACCOUNT_SID.trim().slice(0,8)}...)` : "MISSING";
+  results.twilio_token  = process.env.TWILIO_AUTH_TOKEN     ? "set" : "MISSING";
+  results.twilio_number = process.env.TWILIO_WHATSAPP_NUMBER ? (process.env.TWILIO_WHATSAPP_NUMBER.trim()) : "MISSING";
+  results.groq_key      = process.env.GROQ_API_KEY          ? `set (${process.env.GROQ_API_KEY.trim().slice(0,8)}...)` : "MISSING";
+
+  // 2. Test Groq
+  try {
+    const OpenAI = (await import("openai")).default;
+    const groq = new OpenAI({ apiKey: (process.env.GROQ_API_KEY || "").trim(), baseURL: "https://api.groq.com/openai/v1" });
+    const r = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: "Reply with one word: OK" }],
+      max_tokens: 10,
+    });
+    results.groq = `ok — ${r.choices[0]?.message?.content?.trim()}`;
+  } catch (e) {
+    results.groq = `FAIL — ${String(e).slice(0, 120)}`;
+  }
+
+  // 3. Test Twilio (just validate credentials, don't send)
+  try {
+    const twilio = (await import("twilio")).default;
+    const sid   = (process.env.TWILIO_ACCOUNT_SID   || "").trim();
+    const token = (process.env.TWILIO_AUTH_TOKEN     || "").trim();
+    const client = twilio(sid, token);
+    await client.api.accounts(sid).fetch();
+    results.twilio = "ok";
+  } catch (e) {
+    results.twilio = `FAIL — ${String(e).slice(0, 120)}`;
+  }
+
+  const allOk = Object.values(results).every(v => !v.startsWith("FAIL") && !v.startsWith("MISSING"));
+  res.status(allOk ? 200 : 500).json({ status: allOk ? "ok" : "degraded", checks: results });
+});
+
 // ─── Dashboard snapshot ─────────────────────────────────────────────────────
 app.get("/api/dashboard/snapshot", async (_req: Request, res: Response) => {
   try {

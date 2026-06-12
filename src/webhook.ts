@@ -125,20 +125,23 @@ export async function webhookHandler(req: Request, res: Response): Promise<void>
       detail: `Reply dispatched (${classification.intent})`,
     });
   } catch (err) {
-    console.error("Webhook error:", err);
-    pushActivity({ type: "error", phone: msg.from, detail: String(err) });
+    const errStr = String(err);
+    console.error("Webhook error:", errStr);
+    pushActivity({ type: "error", phone: msg.from, detail: errStr });
 
     try {
       const twilio = (await import("twilio")).default;
-      const client = twilio(
-        process.env.TWILIO_ACCOUNT_SID!,
-        process.env.TWILIO_AUTH_TOKEN!
-      );
+      const sid    = (process.env.TWILIO_ACCOUNT_SID    || "").trim();
+      const token  = (process.env.TWILIO_AUTH_TOKEN      || "").trim();
+      const from   = (process.env.TWILIO_WHATSAPP_NUMBER || "").trim();
+      const client = twilio(sid, token);
       await client.messages.create({
-        from: process.env.TWILIO_WHATSAPP_NUMBER!,
+        from,
         to: msg.from,
-        body: "Maafi karein, ek technical problem aayi hai. Kripya thodi der baad dobara try karein. Helpline: 15100 (NALSA)",
+        body: `Maafi karein, ek technical problem aayi hai. Kripya dobara try karein.\n\nError: ${errStr.slice(0, 120)}\n\nHelpline: 15100 (NALSA)`,
       });
-    } catch {}
+    } catch (e2) {
+      console.error("Fallback send also failed:", e2);
+    }
   }
 }
