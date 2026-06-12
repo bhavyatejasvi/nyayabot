@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "tsx src/index.ts",
     "lint": "tsc --noEmit"
   },
   "engines": {
@@ -28,7 +28,9 @@
     "morgan": "*",
     "multer": "*",
     "openai": "*",
-    "twilio": "*"
+    "twilio": "*",
+    "tsx": "*",
+    "typescript": "*"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
@@ -37,8 +39,6 @@
     "@types/morgan": "*",
     "@types/node": "*",
     "nodemon": "*",
-    "ts-node": "*",
-    "tsx": "*",
-    "typescript": "*"
+    "ts-node": "*"
   }
 }
