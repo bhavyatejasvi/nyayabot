@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.pdf
+*.docx
+uploads/
+server.log
+tunnel.log
+.env.local

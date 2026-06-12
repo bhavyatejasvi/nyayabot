@@ -1,0 +1,44 @@
+{
+  "name": "nyayabot",
+  "version": "1.0.0",
+  "description": "NyayaBot — AI-Powered Legal Aid WhatsApp Bot (skeleton)",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "*",
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "*",
+    "axios": "*",
+    "cors": "*",
+    "docx": "*",
+    "dotenv": "*",
+    "express": "*",
+    "form-data": "*",
+    "groq-sdk": "^1.2.1",
+    "helmet": "*",
+    "jspdf": "*",
+    "morgan": "*",
+    "multer": "*",
+    "openai": "*",
+    "twilio": "*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/cors": "*",
+    "@types/express": "*",
+    "@types/morgan": "*",
+    "@types/node": "*",
+    "nodemon": "*",
+    "ts-node": "*",
+    "tsx": "*",
+    "typescript": "*"
+  }
+}

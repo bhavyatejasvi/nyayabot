@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NyayaBot Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <div class="shell">
+
+      <!-- ── Sidebar ─────────────────────────────────────── -->
+      <aside class="sidebar">
+        <div>
+          <div class="brand-mark">N</div>
+          <h1>NyayaBot</h1>
+          <p class="muted">AI legal aid for every Indian.</p>
+        </div>
+        <nav class="nav">
+          <a href="#overview">Overview</a>
+          <a href="#features">Features</a>
+          <a href="#modules">Modules</a>
+          <a href="#test-console">Test Console</a>
+          <a href="#activity">Live Activity</a>
+          <a href="#records">Records</a>
+          <a href="#flow">Request Flow</a>
+        </nav>
+        <div class="sidebar-card">
+          <div class="label">Backend</div>
+          <div id="backend-state">Connecting…</div>
+          <div class="muted small">localhost:3000</div>
+        </div>
+        <div class="sidebar-card">
+          <div class="label">Activity Stream</div>
+          <div id="sse-state">Connecting…</div>
+          <div class="muted small">SSE live feed</div>
+        </div>
+      </aside>
+
+      <!-- ── Main content ────────────────────────────────── -->
+      <main class="content">
+
+        <!-- Overview -->
+        <section class="hero" id="overview">
+          <div>
+            <div class="eyebrow">WhatsApp Legal Aid Command Center</div>
+            <h2>Run the bot, inspect sessions, and test modules.</h2>
+            <p class="lead">Dashboard is wired to the Express backend. The test console calls real Claude APIs — no mocks.</p>
+          </div>
+          <div class="hero-panel">
+            <div class="hero-panel-top">
+              <span>Live Metrics</span>
+              <span class="pill success" id="live-pill">LIVE</span>
+            </div>
+            <div class="hero-panel-grid" id="metric-grid"></div>
+          </div>
+        </section>
+
+        <!-- Features -->
+        <section class="card-section" id="features">
+          <div class="section-head">
+            <h3>Platform Features</h3>
+            <p>End-to-end bot capabilities.</p>
+          </div>
+          <div class="feature-grid" id="feature-grid"></div>
+        </section>
+
+        <!-- Modules -->
+        <section class="card-section" id="modules">
+          <div class="section-head">
+            <h3>Legal Modules</h3>
+            <p>Core routing and coverage.</p>
+          </div>
+          <div class="module-grid" id="module-grid"></div>
+        </section>
+
+        <!-- Test Console -->
+        <section class="card-section console-layout" id="test-console">
+          <div class="console card">
+            <div class="section-head compact">
+              <h3>Live Test Console</h3>
+              <p>Simulate a WhatsApp message — calls real Claude APIs.</p>
+            </div>
+            <form id="test-form" class="form-grid">
+              <label>
+                Intent (or let Claude classify)
+                <select name="intent">
+                  <option value="FIR_POLICE">FIR_POLICE</option>
+                  <option value="LABOUR_WAGE">LABOUR_WAGE</option>
+                  <option value="WELFARE_SCHEME">WELFARE_SCHEME</option>
+                  <option value="TENANCY_HOUSING">TENANCY_HOUSING</option>
+                  <option value="CONSUMER_COURT">CONSUMER_COURT</option>
+                  <option value="CIVIL_RTI">CIVIL_RTI</option>
+                  <option value="UNKNOWN">UNKNOWN (auto-classify)</option>
+                </select>
+              </label>
+              <label>
+                Simulated Phone
+                <input name="phone" value="whatsapp:+911234567890" />
+              </label>
+              <label class="full">
+                Message
+                <textarea name="message" rows="4">I was assaulted near the market and the police are refusing to file my FIR.</textarea>
+              </label>
+              <label>
+                Language
+                <input name="language" value="hi" />
+              </label>
+              <div class="actions">
+                <button type="submit" id="send-btn">
+                  <span id="send-label">Send Test</span>
+                  <span id="send-spinner" class="spinner hidden"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="response card">
+            <div class="section-head compact">
+              <div>
+                <h3>Response</h3>
+                <p>Returned from the real Claude pipeline.</p>
+              </div>
+              <a id="doc-download" class="download-btn hidden" href="#" target="_blank">⬇ Download Document</a>
+            </div>
+            <pre id="test-output">Run a test to see the Claude-generated response here.</pre>
+          </div>
+        </section>
+
+        <!-- Live Activity Feed -->
+        <section class="card-section" id="activity">
+          <div class="section-head">
+            <h3>Live Activity</h3>
+            <p id="activity-count">Waiting for events…</p>
+          </div>
+          <div class="activity-feed card" id="activity-feed">
+            <div class="activity-empty" id="activity-empty">No activity yet. Send a WhatsApp message or run a test above.</div>
+          </div>
+        </section>
+
+        <!-- Records -->
+        <section class="card-section" id="records">
+          <div class="records-grid">
+            <div class="card table-card">
+              <div class="section-head compact">
+                <h3>Recent Sessions</h3>
+                <p>Latest WhatsApp conversations.</p>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Phone</th><th>Intent</th><th>Lang</th><th>Updated</th></tr>
+                  </thead>
+                  <tbody id="sessions-body"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card table-card">
+              <div class="section-head compact">
+                <h3>Recent Documents</h3>
+                <p>Generated outputs.</p>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Doc</th><th>Type</th><th>Phone</th><th>Created</th></tr>
+                  </thead>
+                  <tbody id="documents-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Request Flow -->
+        <section class="card-section" id="flow">
+          <div class="section-head compact">
+            <h3>Request Flow</h3>
+            <p>How the system is wired end-to-end.</p>
+          </div>
+          <div class="flow" id="flow-nodes"></div>
+        </section>
+
+      </main>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
