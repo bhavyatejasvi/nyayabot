@@ -185,32 +185,6 @@ app.post("/webhook-test", async (req: Request, res: Response) => {
   }
 });
 
-// ─── Twilio credentials diagnostic ─────────────────────────────────────────
-app.get("/twilio-test", async (req: Request, res: Response) => {
-  const to = req.query.to as string;
-  if (!to) {
-    res.json({
-      sid: config.twilio.accountSid?.slice(0, 8) + "...",
-      from: config.twilio.whatsappNumber,
-      groq: config.groq.apiKey ? "set" : "MISSING",
-      usage: "Add ?to=whatsapp:+91XXXXXXXXXX to send a test message",
-    });
-    return;
-  }
-  try {
-    const twilio = (await import("twilio")).default;
-    const client = twilio(config.twilio.accountSid, config.twilio.authToken);
-    const msg = await client.messages.create({
-      from: config.twilio.whatsappNumber,
-      to,
-      body: "NyayaBot test message — credentials are working!",
-    });
-    res.json({ ok: true, sid: msg.sid, status: msg.status });
-  } catch (err: unknown) {
-    res.json({ ok: false, error: String(err) });
-  }
-});
-
 // ─── Twilio WhatsApp webhook ─────────────────────────────────────────────────
 app.post("/webhook", webhookHandler);
 
