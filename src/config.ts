@@ -3,9 +3,9 @@ dotenv.config();
 
 export const config = {
   twilio: {
-    accountSid:     process.env.TWILIO_ACCOUNT_SID     || "",
-    authToken:      process.env.TWILIO_AUTH_TOKEN       || "",
-    whatsappNumber: process.env.TWILIO_WHATSAPP_NUMBER  || "",
+    accountSid:     (process.env.TWILIO_ACCOUNT_SID     || "").trim(),
+    authToken:      (process.env.TWILIO_AUTH_TOKEN       || "").trim(),
+    whatsappNumber: (process.env.TWILIO_WHATSAPP_NUMBER  || "").trim(),
   },
   groq: {
     // Optional — set for voice transcription via Groq Whisper (free at console.groq.com)
