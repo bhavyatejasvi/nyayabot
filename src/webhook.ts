@@ -129,6 +129,14 @@ export async function webhookHandler(req: Request, res: Response): Promise<void>
     console.error("Webhook error:", errStr);
     pushActivity({ type: "error", phone: msg.from, detail: errStr });
 
+    // Twilio 429/63038 = sandbox daily message limit hit — retrying is pointless
+    const isTwilioLimit = errStr.includes("63038") || errStr.includes("messages limit") ||
+      (errStr.includes("429") && errStr.includes("twilio"));
+    if (isTwilioLimit) {
+      console.error("Twilio sandbox message limit hit. Wait for daily reset or upgrade account.");
+      return;
+    }
+
     try {
       const twilio = (await import("twilio")).default;
       const sid    = (process.env.TWILIO_ACCOUNT_SID    || "").trim();
