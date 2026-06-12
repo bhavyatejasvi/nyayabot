@@ -153,7 +153,7 @@ nyayabot/
 ### 2. Clone and Install
 
 ```bash
-git clone https://github.com/bhavyatejasvi/nyayabot.git
+git clone https://github.com/YOUR_USERNAME/nyayabot.git
 cd nyayabot
 npm install
 ```
@@ -168,19 +168,19 @@ Open `.env` and fill in:
 
 ```env
 # Twilio — get from console.twilio.com
-TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_WHATSAPP_NUMBER=whatsapp:+your_twilio_sandbox_number
 
 # Groq — get from console.groq.com (free, no credit card)
-GROQ_API_KEY=gsk_...
+GROQ_API_KEY=your_groq_api_key
 
 # Google Maps — get from console.cloud.google.com (enable Places API)
-GOOGLE_AI_API_KEY=AIza...
+GOOGLE_AI_API_KEY=your_google_maps_api_key
 
 # Supabase — optional, skip for local dev
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 PORT=3000
 NODE_ENV=development
@@ -243,7 +243,7 @@ I want to file an RTI application
 ### Step 1 — Push to GitHub
 
 ```bash
-git remote add origin https://github.com/bhavyatejasvi/nyayabot.git
+git remote add origin https://github.com/YOUR_USERNAME/nyayabot.git
 git branch -M main
 git push -u origin main
 ```
@@ -252,7 +252,7 @@ git push -u origin main
 
 1. Go to [railway.app](https://railway.app) → **Start a New Project**
 2. Sign in with GitHub → **Deploy from GitHub repo**
-3. Select `bhavyatejasvi/nyayabot`
+3. Select `YOUR_USERNAME/nyayabot`
 4. Railway auto-detects Node.js and runs `npm start`
 
 ### Step 3 — Add Environment Variables
@@ -260,11 +260,11 @@ git push -u origin main
 In Railway dashboard → your project → **Variables** tab → **Raw Editor**:
 
 ```env
-TWILIO_ACCOUNT_SID=your_value
-TWILIO_AUTH_TOKEN=your_value
-TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
-GROQ_API_KEY=your_value
-GOOGLE_AI_API_KEY=your_value
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_WHATSAPP_NUMBER=whatsapp:+your_twilio_sandbox_number
+GROQ_API_KEY=your_groq_api_key
+GOOGLE_AI_API_KEY=your_google_maps_api_key
 NODE_ENV=production
 PORT=3000
 ```
