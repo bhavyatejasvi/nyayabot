@@ -225,6 +225,31 @@ app.post("/webhook-test", async (req: Request, res: Response) => {
   }
 });
 
+// ─── Direct outbound send test — bypasses entire pipeline ───────────────────
+// GET /send-test?to=whatsapp:+919XXXXXXXXX
+app.get("/send-test", async (req: Request, res: Response) => {
+  const to = (req.query.to as string || "").trim();
+  if (!to) {
+    res.status(400).json({ error: "Pass ?to=whatsapp:+91XXXXXXXXXX in the URL" });
+    return;
+  }
+  try {
+    const twilio = (await import("twilio")).default;
+    const sid    = (process.env.TWILIO_ACCOUNT_SID    || "").trim();
+    const token  = (process.env.TWILIO_AUTH_TOKEN      || "").trim();
+    const from   = (process.env.TWILIO_WHATSAPP_NUMBER || "").trim();
+    const client = twilio(sid, token);
+    const msg = await client.messages.create({
+      from,
+      to,
+      body: "✅ NyayaBot send-test: outbound WhatsApp delivery confirmed!",
+    });
+    res.json({ ok: true, sid: msg.sid, status: msg.status, from, to });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: String(e) });
+  }
+});
+
 // ─── Twilio WhatsApp webhook ─────────────────────────────────────────────────
 app.post("/webhook", webhookHandler);
 
